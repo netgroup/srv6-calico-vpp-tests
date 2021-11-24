@@ -1,0 +1,145 @@
+MASTER_CPUS = 4
+MASTER_MEMORY_SIZE_GB = 4
+DISK_SIZE_GB = 128
+DNS_SERVER = '8.8.8.8'
+KUBERNETES_VERSION = '1.22.1-00'
+CONTAINERD_VERSION = '1.4.9-1'
+
+# This script installs all the required packages to create a base box that
+# then speeds up cluster creation
+$baseConfigScript = <<SCRIPT
+# DNS configuration
+sed -i 's/^DNS=.*/DNS=#{DNS_SERVER}/' /etc/systemd/resolved.conf
+sed -i 's/^DNSSEC=.*/DNSSEC=no/' /etc/systemd/resolved.conf
+sed -i 's/addresses:.*/addresses: [#{DNS_SERVER}]/' /etc/netplan/01-netcfg.yaml
+netplan apply
+systemctl restart systemd-resolved
+systemd-resolve --flush-caches
+systemd-resolve --status
+
+# Disable swap
+swapoff -a
+sed -i '/swap/s/^/#/g' /etc/fstab
+
+cat << EOF > /etc/sysctl.conf
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0
+net.ipv6.conf.all.accept_dad = 0
+net.ipv6.conf.default.accept_dad = 0
+net.ipv6.conf.default.forwarding = 1
+net.ipv6.conf.all.forwarding = 1
+net.ipv6.conf.all.autoconf = 0
+net.ipv6.conf.all.accept_ra = 0
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.conf.all.rp_filter = 0
+net.ipv4.ip_forward = 1
+vm.nr_hugepages = 128
+EOF
+
+cat << EOF > /etc/modules-load.d/ipvs.conf
+overlay
+br_netfilter
+ip_vs
+ip_vs_wrr
+ip_vs_sh
+ip_vs_rr
+nf_conntrack
+nf_conntrack_ipv4
+nf_conntrack_ipv6
+uio_pci_generic
+EOF
+
+cat <<EOF > /etc/apt/apt.conf.d/proxy.conf
+Acquire {
+  HTTP::proxy "#{ENV['VAGRANT_VM_PROXY']}";
+  HTTPS::proxy "#{ENV['VAGRANT_VM_PROXY']}";
+}
+EOF
+
+# Crictl install
+curl -fsSL https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.22.0/crictl-v1.22.0-linux-amd64.tar.gz \
+    | tar -zxvf - -C /usr/local/bin
+cat <<EOF > /etc/crictl.yaml
+runtime-endpoint: unix:///run/containerd/containerd.sock
+image-endpoint: unix:///run/containerd/containerd.sock
+timeout: 5
+EOF
+
+
+retries=5
+for ((i=0; i<retries; i++)); do
+    apt-get update && \
+    apt-get -y install apt-transport-https curl software-properties-common \
+        ca-certificates nfs-common portmap && \
+    break
+done
+[[ $retries -eq i ]] && { echo "Failed to install apt-transport-https and other dependenices after 5 tries"; exit 1; }
+
+
+curl --retry 5 -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+curl --retry 5 -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+if [ -n "#{KUBERNETES_VERSION}" ]; then
+    KUBERNETES_PACKAGES="kubelet=#{KUBERNETES_VERSION} kubeadm=#{KUBERNETES_VERSION} kubectl=#{KUBERNETES_VERSION}"
+else
+    KUBERNETES_PACKAGES="kubelet kubeadm kubectl"
+fi
+
+retries=5
+for ((i=0; i<retries; i++)); do
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install \
+        tmux screen telnet conntrack socat net-tools gdb jq make \
+        containerd.io=#{CONTAINERD_VERSION} ${KUBERNETES_PACKAGES} && \
+    break
+done
+[[ $retries -eq i ]] && { echo "Failed to install containerd, kubelet, kubeadm and other dependenices after 5 tries"; exit 1; }
+
+systemctl disable kubelet
+apt-mark hold containerd kubelet kubeadm kubectl
+
+# Containerd config
+containerd config default \
+    | sed '/plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options/a \            SystemdCgroup = true' \
+    > /etc/containerd/config.toml
+systemctl restart containerd.service
+
+# Increase /run dir as it is/was a problem on Ubuntu 18.04 (at least on bento box image)
+echo 'tmpfs /run tmpfs rw,nosuid,noexec,relatime,size=614460k,mode=755' >> /etc/fstab
+
+# Download k8s images
+kubeadm config images pull
+
+systemctl stop containerd.service
+apt-get clean
+sync
+
+SCRIPT
+
+Vagrant.configure('2') do |config|
+    config.vm.define :base_vm do |base_vm|
+        base_vm.vm.box = "generic/ubuntu2004"
+        base_vm.ssh.insert_key = false
+        base_vm.vm.boot_timeout = 900
+
+        base_vm.vm.provider :libvirt do |l|
+            l.driver = "kvm"
+
+            #l.default_prefix = 'cluster_base_vm'
+            l.cpus = MASTER_CPUS
+            l.memory = MASTER_MEMORY_SIZE_GB * 1024
+            l.machine_virtual_size = DISK_SIZE_GB
+        end
+
+        base_vm.vm.provision :shell, inline: $baseConfigScript
+        
+    end
+end
