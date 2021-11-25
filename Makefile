@@ -1,4 +1,4 @@
-
+SHELL := /bin/bash
 CWD = $(shell pwd)
 
 .PHONY: build-base-box
@@ -29,3 +29,29 @@ start-master:
 destroy-master:
 	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/master/Vagrantfile; \
 	vagrant destroy -f
+
+.PHONY: start-worker	
+start-worker:
+	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
+	vagrant up
+
+.PHONY: destroy-worker
+destroy-worker:
+	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
+	vagrant destroy -f
+
+.PHONY: create-python-venv
+create-python-venv:
+	$(MAKE) -C $(CWD)/scenario1 $@
+
+.PHONY: install-python-dependencies
+install-python-dependencies:
+	$(MAKE) -C $(CWD)/scenario1 $@
+
+.PHONY: start-mininet-scenario
+start-mininet-scenario:
+	$(MAKE) -C $(CWD)/scenario1 $@
+
+.PHONY: stop-mininet-scenario
+stop-mininet-scenario:
+	$(MAKE) -C $(CWD)/scenario1 $@
