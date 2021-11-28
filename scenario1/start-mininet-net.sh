@@ -2,5 +2,5 @@
 
 
 source .venv/bin/activate
-cd rose-srv6-tutorial/nets/8r-1c-in-band-isis || exit
+cd ../mininet/rose-srv6-tutorial/nets/8routers-isis-ipv6 || exit
 python isis8d.py

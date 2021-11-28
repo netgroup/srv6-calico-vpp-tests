@@ -12,7 +12,7 @@ create-python-venv:
 .PHONY: install-python-dependencies
 install-python-dependencies:
 	@echo "install python dependencies"
-	sudo .venv/bin/pip install -r rose-srv6-tutorial/requirements.txt
+	sudo .venv/bin/pip install -r ../mininet/rose-srv6-tutorial/requirements.txt
 
 .PHONY: start-mininet-scenario
 start-mininet-scenario:
