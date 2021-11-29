@@ -23,3 +23,11 @@ start-mininet-scenario:
 stop-mininet-scenario:
 	@echo "stop mininet network for scenario1"
 	sudo screen -S scenario1 -X stuff "quit^M"
+
+.PHONY: create-veth-pair-scenario
+create-veth-pair-scenario:
+	@echo "Create veth pair with srv6-calico-vpp-tests_master"
+	../scripts/create-veth-pair.sh r3 0 srv6-calico-vpp-tests_master fd10::1020
+	#@echo "Create veth pair with srv6-calico-vpp-tests_worker1"
+	#../create-veth-pair.sh r3 1 srv6-calico-vpp-tests_master fd20::1020
+	
