@@ -6,9 +6,11 @@ HOST=$1
 INDEX=$2
 NETNS_PID=$(ps ax | grep mininet:$HOST | grep bash | awk '{print $1}')
 VM_NAME=$3
-VETH_NS_IP6=$4
+VM_PREFIX_NET=$4
+VETH_NS_IP6=$5
 VETH_NS_NAME="veth${HOST}${INDEX}"
-NET_NAME=$(sudo virsh domiflist $VM_NAME | grep srv6-calico-vpp-tests | awk '{print $3}')
+
+NET_NAME=$(sudo virsh domiflist $VM_NAME | grep $VM_PREFIX_NET | awk '{print $3}')
 V_SWITCH=$(sudo virsh net-info $NET_NAME | grep Bridge | awk '{print $2}')
 echo "$NET_NAME $V_SWITCH"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip link add $VETH_NS_NAME type veth peer name $VETH_NS_NAME netns 1
