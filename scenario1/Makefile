@@ -27,7 +27,22 @@ stop-mininet-scenario:
 .PHONY: create-veth-pair-scenario
 create-veth-pair-scenario:
 	@echo "Create veth pair with srv6-calico-vpp-tests_master"
-	../scripts/create-veth-pair.sh r3 0 srv6-calico-vpp-tests_master srv6-calico-vpp-tests fd10::1020
+	../scripts/create-veth-pair.sh r3 0 srv6-calico-vpp-tests_master srv6-calico-vpp-tests fd10::1020/64
 	#@echo "Create veth pair with srv6-calico-vpp-tests_worker1"
-	#../create-veth-pair.sh r3 1 srv6-calico-vpp-tests_master fd20::1020
-	
+	#../scripts/create-veth-pair.sh r3 1 srv6-calico-vpp-tests_worker1 srv6-calico-vpp-tests fd11::1020/64
+	#@echo "Create veth pair with srv6-calico-vpp-tests_worker2"
+	#../scripts/create-veth-pair.sh r8 2 srv6-calico-vpp-tests_worker2 srv6-calico-vpp-tests fd12::1020/64
+
+.PHONY: create-virsh-networks
+create-virsh-networks:
+	@echo "Create virsh networks for scenario1"
+	sudo virsh net-create ./virsh/virbr-tests0.xml
+	sudo virsh net-create ./virsh/virbr-tests1.xml
+	sudo virsh net-create ./virsh/virbr-tests2.xml
+
+.PHONY: clean-virsh-networks
+clean-virsh-networks:
+	@echo "Destroy virsh networks for scenario1"
+	sudo virsh net-undefine srv6-calico-vpp-tests0
+	sudo virsh net-undefine srv6-calico-vpp-tests1
+	sudo virsh net-undefine srv6-calico-vpp-tests2
