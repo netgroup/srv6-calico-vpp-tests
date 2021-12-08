@@ -27,6 +27,6 @@ EOF
 netplan apply
 
 KUBELET_EXTRA_ARGS_FILE=/etc/default/kubelet
-echo "KUBELET_EXTRA_ARGS=--node-ip=${NODE_IP6} --cni-bin-dir=/opt/cni/bin,/usr/libexec/cni" > "${KUBELET_EXTRA_ARGS_FILE}"
+echo "KUBELET_EXTRA_ARGS=--node-ip=${NODE_IP} --cni-bin-dir=/opt/cni/bin,/usr/libexec/cni" > "${KUBELET_EXTRA_ARGS_FILE}"
 systemctl enable kubelet
 systemctl start kubelet

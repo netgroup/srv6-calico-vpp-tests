@@ -8,6 +8,7 @@ NETNS_PID=$(ps ax | grep mininet:$HOST | grep bash | awk '{print $1}')
 VM_NAME=$3
 VM_PREFIX_NET=$4
 VETH_NS_IP6=$5
+VETH_NS_IP4=$6
 VETH_NS_NAME="veth${HOST}${INDEX}"
 
 NET_NAME=$(sudo virsh domiflist $VM_NAME | grep $VM_PREFIX_NET | awk '{print $3}')
@@ -21,4 +22,6 @@ sudo ip link set $VETH_NS_NAME master $V_SWITCH
 sudo nsenter -t "$NETNS_PID" -n -m -- ip link set $VETH_NS_NAME up
 # assign IP6 to the veth0 inside the NS
 sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP6 dev $VETH_NS_NAME
+# assign IP4 to the veth0 inside the NS
+sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP4 dev $VETH_NS_NAME
 

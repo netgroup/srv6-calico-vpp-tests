@@ -16,7 +16,7 @@ for ((i = 0; i < retries; i++)); do
     kubeadm init \
         --kubernetes-version="${KUBERNETES_VERSION}" \
         --ignore-preflight-errors=SystemVerification \
-        --apiserver-advertise-address="${MASTER_IP6}" \
+        --apiserver-advertise-address="${MASTER_IP}" \
         --apiserver-cert-extra-sans="${MASTER_IP}","${MASTER_IP6}" \
         --pod-network-cidr="${POD_NW_CIDR}" \
         --service-cidr="${SERVICE_CIDR}" \
