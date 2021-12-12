@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: podmaster
+  name: podmaster
+spec:
+  nodeName: master
+  tolerations:
+    # Mark the pod as a critical add-on for rescheduling.
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+  containers:
+    - image: busybox
+      name: podmaster
+      command:
+        - sleep
+        - "10000"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

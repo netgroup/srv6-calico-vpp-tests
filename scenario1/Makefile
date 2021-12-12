@@ -27,9 +27,9 @@ stop-mininet-scenario:
 .PHONY: create-veth-pair-scenario
 create-veth-pair-scenario:
 	@echo "Create veth pair with srv6-calico-vpp-tests_master"
-	../scripts/create-veth-pair.sh r3 0 srv6-calico-vpp-tests_master srv6-calico-vpp-tests fd10::1020/64
-	#@echo "Create veth pair with srv6-calico-vpp-tests_worker1"
-	#../scripts/create-veth-pair.sh r3 1 srv6-calico-vpp-tests_worker1 srv6-calico-vpp-tests fd11::1020/64
+	../scripts/create-veth-pair.sh r3 0 srv6-calico-vpp-tests_master srv6-calico-vpp-tests fd10::1020/64 192.168.10.3/24
+	@echo "Create veth pair with srv6-calico-vpp-tests_worker1"
+	../scripts/create-veth-pair.sh r3 1 srv6-calico-vpp-tests_worker1 srv6-calico-vpp-tests fd11::1020/64 192.168.11.3/24
 	#@echo "Create veth pair with srv6-calico-vpp-tests_worker2"
 	#../scripts/create-veth-pair.sh r8 2 srv6-calico-vpp-tests_worker2 srv6-calico-vpp-tests fd12::1020/64
 

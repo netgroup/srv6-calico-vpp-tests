@@ -5,8 +5,9 @@ MASTER_MEMORY_SIZE_GB = 4
 DISK_SIZE_GB = 80
 MASTER_NODESET = ''
 MASTER_NIC_PASSTHROUGH = ''
-MASTER_IP = '192.167.0.254'
+MASTER_IP = '192.168.10.254'
 MASTER_IP6 = 'fd10::1000'
+NODE_IP6_GW = 'fd10::1020'
 DATA_IF_MTU = '1380'
 POD_NW_CIDR = '172.16.0.0/16'
 SERVICE_CIDR = '10.96.0.0/12'
@@ -45,9 +46,17 @@ Vagrant.configure('2') do |config|
                 :libvirt__ipv6_prefix => "64"
         end
         # Provision
+        subconfig.vm.provision :file do |provision|
+            provision.source = 'docker/image_agent_srv6'
+            provision.destination = '/tmp/image_agent_srv6'
+        end
+        subconfig.vm.provision :file do |provision|
+            provision.source = 'docker/image_vpp_srv6'
+            provision.destination = '/tmp/image_vpp_srv6'
+        end
         subconfig.vm.provision "shell" do |s|
             s.path = "vagrant/scripts/linux/prepare.sh"
-            s.args = ["#{DATA_IF_MTU}", "#{MASTER_IP}" , "#{MASTER_IP6}"]
+            s.args = ["#{DATA_IF_MTU}", "#{MASTER_IP}" , "#{MASTER_IP6}", "#{NODE_IP6_GW}"]
         end
         subconfig.vm.provision "shell" do |s|
             s.path = "vagrant/scripts/linux/master-k8s-init.sh"

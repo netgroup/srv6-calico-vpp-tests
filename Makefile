@@ -55,3 +55,7 @@ start-mininet-scenario:
 .PHONY: stop-mininet-scenario
 stop-mininet-scenario:
 	$(MAKE) -C $(CWD)/scenario1 $@
+
+.PHONY: enter-in
+enter-in:
+	scripts/ns-enter.sh	$(name)

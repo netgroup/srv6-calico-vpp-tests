@@ -2,7 +2,7 @@
 DATA_IF_MTU=$1
 NODE_IP=$2  # IP address of the node
 NODE_IP6=$3  # IP address of the node
-
+NODE_IP_GATEWAY=$4  # Gateway of the node
 resize2fs /dev/vda3
 
 second_if=$(ip -o link show | awk -F': ' '{print $2}' |grep -v -e lo -e docker -e eth0)
@@ -22,11 +22,31 @@ network:
       addresses:
         - ${NODE_IP}/24
         - ${NODE_IP6}/64
+      routes:
+        - to: ::/0
+          via: ${NODE_IP_GATEWAY}
+          table: 0
 EOF
 
 netplan apply
 
 KUBELET_EXTRA_ARGS_FILE=/etc/default/kubelet
-echo "KUBELET_EXTRA_ARGS=--node-ip=${NODE_IP6} --cni-bin-dir=/opt/cni/bin,/usr/libexec/cni" > "${KUBELET_EXTRA_ARGS_FILE}"
+echo "KUBELET_EXTRA_ARGS=--node-ip=${NODE_IP} --cni-bin-dir=/opt/cni/bin,/usr/libexec/cni" > "${KUBELET_EXTRA_ARGS_FILE}"
 systemctl enable kubelet
 systemctl start kubelet
+
+# if image file exists
+if [ -f /tmp/image_vpp_srv6 ]; then
+  # load cri image
+  ctr -n k8s.io image import --base-name zvfvrv/vpp:latest /tmp/image_vpp_srv6 
+  # done
+  rm -f /tmp/image_vpp_srv6
+fi
+
+#if image agent file exists
+if [ -f /tmp/image_agent_srv6 ]; then
+  # load crio image
+  ctr -n k8s.io image import --base-name zvfvrv/agent:latest /tmp/image_agent_srv6
+  # done
+  rm -f /tmp/image_agent_srv6
+fi

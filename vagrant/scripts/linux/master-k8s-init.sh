@@ -16,7 +16,7 @@ for ((i = 0; i < retries; i++)); do
     kubeadm init \
         --kubernetes-version="${KUBERNETES_VERSION}" \
         --ignore-preflight-errors=SystemVerification \
-        --apiserver-advertise-address="${MASTER_IP6}" \
+        --apiserver-advertise-address="${MASTER_IP}" \
         --apiserver-cert-extra-sans="${MASTER_IP}","${MASTER_IP6}" \
         --pod-network-cidr="${POD_NW_CIDR}" \
         --service-cidr="${SERVICE_CIDR}" \
@@ -34,3 +34,5 @@ done
 mkdir -p "$HOME"/.kube
 cp -Rf /etc/kubernetes/admin.conf "$HOME"/.kube/config
 chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+
+echo "source <(kubectl completion bash)" >> /home/vagrant/.bashrc # add autocomplete permanently to your bash shell.
