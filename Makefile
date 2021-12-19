@@ -20,25 +20,25 @@ clean-base-box:
 	vagrant box remove -f srv6-calico-vpp-base --all --no-color
 	virsh vol-delete --pool default srv6-calico-vpp-base_vagrant_box_image_0.img
 
-.PHONY: start-master	
-start-master:
-	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/master/Vagrantfile; \
-	vagrant up 
+# .PHONY: start-master	
+# start-master:
+# 	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/master/Vagrantfile; \
+# 	vagrant up 
 
-.PHONY: start-master	
-destroy-master:
-	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/master/Vagrantfile; \
-	vagrant destroy -f
+# .PHONY: start-master	
+# destroy-master:
+# 	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/master/Vagrantfile; \
+# 	vagrant destroy -f
 
-.PHONY: start-worker	
-start-worker:
-	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
-	vagrant up
+# .PHONY: start-worker	
+# start-worker:
+# 	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
+# 	vagrant up
 
-.PHONY: destroy-worker
-destroy-worker:
-	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
-	vagrant destroy -f
+# .PHONY: destroy-worker
+# destroy-worker:
+# 	export VAGRANT_VAGRANTFILE=$(CWD)/vagrant/worker/Vagrantfile; \
+# 	vagrant destroy -f
 
 .PHONY: create-python-venv
 create-python-venv:
@@ -59,3 +59,11 @@ stop-mininet-scenario:
 .PHONY: enter-in
 enter-in:
 	scripts/ns-enter.sh	$(name)
+
+.PHONY: start-scenario1
+start-scenario1:
+	$(MAKE) -C $(CWD)/scenario1 $@
+
+.PHONY: destroy-scenario1
+destroy-scenario1:
+	$(MAKE) -C $(CWD)/scenario1 $@

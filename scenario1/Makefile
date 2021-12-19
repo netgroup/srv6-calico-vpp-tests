@@ -1,4 +1,6 @@
 SHELL := /bin/bash
+CWD = $(shell pwd)
+
 
 .PHONY: setup
 setup:
@@ -46,3 +48,34 @@ clean-virsh-networks:
 	sudo virsh net-undefine srv6-calico-vpp-tests0
 	sudo virsh net-undefine srv6-calico-vpp-tests1
 	sudo virsh net-undefine srv6-calico-vpp-tests2
+
+.PHONY: start-scenario1
+start-scenario1:
+	@echo "start scenario1"
+	
+	@$(MAKE) start-mininet-scenario
+	@$(MAKE) create-virsh-networks
+	@$(MAKE) start-cluster
+	@$(MAKE) create-veth-pair-scenario
+	
+.PHONY: start-cluster
+start-cluster:
+	@echo "start master node scenario1"
+	set -o allexport; source .master.env; set +o allexport && vagrant up
+	@echo "start worker1 node scenario1"
+	set -o allexport; source .worker1.env; set +o allexport && vagrant up
+
+.PHONY: destroy-scenario1
+destroy-scenario1:
+	@echo "destroy scenario1"
+	@$(MAKE) stop-mininet-scenario
+	@$(MAKE) destroy-cluster
+	@$(MAKE) clean-virsh-networks
+
+
+.PHONY: destroy-cluster
+destroy-cluster:
+	@echo "destroy master node scenario1"
+	set -o allexport; source .master.env; set +o allexport && vagrant destroy -f
+	@echo "destroy worker1 node scenario1"
+	set -o allexport; source .worker1.env; set +o allexport && vagrant destroy -f

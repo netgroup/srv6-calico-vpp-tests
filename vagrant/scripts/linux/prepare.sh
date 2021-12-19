@@ -1,8 +1,10 @@
 #!/bin/bash
 DATA_IF_MTU=$1
 NODE_IP=$2  # IP address of the node
-NODE_IP6=$3  # IP address of the node
-NODE_IP_GATEWAY=$4  # Gateway of the node
+NODE_IP6=$3  # IP6 address of the node
+NODE_IP6_GATEWAY=$4  # Gateway IP6 of the node
+NODE_IP4_GATEWAY=$5  # Gateway IP6 of the node
+NODE_IP4_NET=$6  # Gateway IP6 of the node
 resize2fs /dev/vda3
 
 second_if=$(ip -o link show | awk -F': ' '{print $2}' |grep -v -e lo -e docker -e eth0)
@@ -24,7 +26,10 @@ network:
         - ${NODE_IP6}/64
       routes:
         - to: ::/0
-          via: ${NODE_IP_GATEWAY}
+          via: ${NODE_IP6_GATEWAY}
+          table: 0
+        - to: ${NODE_IP4_NET}
+          via: ${NODE_IP4_GATEWAY}
           table: 0
 EOF
 

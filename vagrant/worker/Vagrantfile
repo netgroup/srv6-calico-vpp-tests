@@ -1,18 +1,21 @@
-BASE_IMAGE = 'srv6-calico-vpp-base'
-CLUSTER_NAME = 'srv6-calico-vpp-tests'
-NODE = 1
-NODE_CPUS = 2
-NODE_MEMORY_SIZE_GB = 2
-DISK_SIZE_GB = 80
+BASE_IMAGE = ENV['BASE_IMAGE'] || 'srv6-calico-vpp-base'
+CLUSTER_NAME = ENV['CLUSTER_NAME'] || 'srv6-calico-vpp-tests'
+DATA_IF_MTU = '1380'
+POD_NW_CIDR = ENV['POD_NW_CIDR'] || '172.16.0.0/16'
+SERVICE_CIDR = ENV['SERVICE_CIDR'] || '10.96.0.0/12'
+KUBETOKEN = ENV['KUBETOKEN'] || 'xvyy6d.6iw5i2ivk55xsklv'
+KUBERNETES_VERSION = ENV['KUBERNETES_VERSION'] || '1.22.1'
 NODE_NODESET = ''
 NODE_NIC_PASSTHROUGH = ''
-NODE_IP = '192.168.11.254'
-NODE_IP6 = 'fd11::1000'
-NODE_IP6_GW = 'fd11::1020'
-DATA_IF_MTU = '1380'
-POD_NW_CIDR = '172.16.0.0/16'
-SERVICE_CIDR = '10.96.0.0/12'
-KUBETOKEN = 'xvyy6d.6iw5i2ivk55xsklv'
+NODE = ENV['NODE'].to_i || 1
+NODE_CPUS = ENV['NODE_CPUS'].to_i || 2
+NODE_MEMORY_SIZE_GB = ENV['NODE_MEMORY_SIZE_GB'].to_i || 4
+DISK_SIZE_GB = ENV['DISK_SIZE_GB'].to_i || 80
+NODE_IP = ENV['NODE_IP'] || '192.168.11.254'
+NODE_IP6 = ENV['NODE_IP6'] || 'fd11::1000'
+NODE_IP6_GW = ENV['NODE_IP6_GW'] || 'fd11::1020'
+NODE_IP4_GW = ENV['NODE_IP4_GW'] || '192.168.11.3'
+NODE_IP4_NET = ENV['NODE_IP4_NET'] || '192.168.11.0/24'
 WORKER_NODE_NAME = "worker#{NODE}"
 
 Vagrant.configure('2') do |config|
@@ -48,16 +51,16 @@ Vagrant.configure('2') do |config|
         
         # Provision
         subconfig.vm.provision :file do |provision|
-            provision.source = 'docker/image_agent_srv6'
+            provision.source = '../docker/image_agent_srv6.zip'
             provision.destination = '/tmp/image_agent_srv6'
         end
         subconfig.vm.provision :file do |provision|
-            provision.source = 'docker/image_vpp_srv6'
+            provision.source = '../docker/image_vpp_srv6.zip'
             provision.destination = '/tmp/image_vpp_srv6'
         end
         subconfig.vm.provision "shell" do |s|
-            s.path = "vagrant/scripts/linux/prepare.sh"
-            s.args = ["#{DATA_IF_MTU}", "#{NODE_IP}" , "#{NODE_IP6}", "#{NODE_IP6_GW}"]
+            s.path = "../vagrant/scripts/linux/prepare.sh"
+            s.args = ["#{DATA_IF_MTU}", "#{NODE_IP}" , "#{NODE_IP6}", "#{NODE_IP6_GW}", "#{NODE_IP4_GW}", "#{NODE_IP4_NET}"]
         end
 
     end

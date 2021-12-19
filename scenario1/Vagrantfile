@@ -1,0 +1,10 @@
+NODE = ENV['NODE'].to_i || 0
+
+if NODE == 0
+    $vagrantfilepath = "../../vagrant/master/Vagrantfile"
+else
+    $vagrantfilepath = "../../vagrant/worker/Vagrantfile"
+end
+
+$vagrantfilepath = File.expand_path($vagrantfilepath, __FILE__)
+load $vagrantfilepath
