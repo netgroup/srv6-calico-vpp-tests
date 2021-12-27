@@ -45,9 +45,9 @@ create-virsh-networks:
 .PHONY: clean-virsh-networks
 clean-virsh-networks:
 	@echo "Destroy virsh networks for scenario1"
-	sudo virsh net-undefine srv6-calico-vpp-tests0
-	sudo virsh net-undefine srv6-calico-vpp-tests1
-	sudo virsh net-undefine srv6-calico-vpp-tests2
+	sudo virsh net-destroy srv6-calico-vpp-tests0
+	sudo virsh net-destroy srv6-calico-vpp-tests1
+	sudo virsh net-destroy srv6-calico-vpp-tests2
 
 .PHONY: start-scenario1
 start-scenario1:
