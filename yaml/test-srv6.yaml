@@ -3489,6 +3489,7 @@ rules:
   - configmaps
   verbs:
   - get
+  - watch
 - apiGroups:
   - ""
   resources:
@@ -3623,6 +3624,7 @@ rules:
   - configmaps
   verbs:
   - get
+  - watch
 - apiGroups:
   - ""
   resources:
@@ -3945,7 +3947,7 @@ spec:
               fieldPath: spec.nodeName
         - name: CALICOVPP_CORE_PATTERN
           value: /var/lib/vpp/vppcore.%e.%p
-        image: docker.io/calicovpp/vpp:srv6
+        image: docker.io/calicovpp/vpp:srv6_cm
         imagePullPolicy: IfNotPresent
         name: vpp
         resources:
@@ -4000,7 +4002,7 @@ spec:
             configMapKeyRef:
               key: service_prefix
               name: calico-vpp-config
-        image: docker.io/calicovpp/agent:srv6
+        image: docker.io/calicovpp/agent:srv6_cm
         imagePullPolicy: IfNotPresent
         name: agent
         resources:

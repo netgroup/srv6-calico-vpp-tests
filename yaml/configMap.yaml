@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: srv6-config
+  namespace: calico-vpp-dataplane
+data:
+  master: |
+    --- 
+    localsids: 
+      DT4: "fcdd::aa:34b8:247c:36da:db44"
+      DT6: "fcdd::aa:34b8:247c:36da:db45"
+    node: master
+    policies: 
+      - 
+        bsid: "cafe::1c3"
+        node: "fd11::1000"
+        segment_list:
+          - "fcff:3::1"
+          - "fcdd::11aa:c11:b42f:f17e:a683"
+        traffic: IPv6
+      - 
+        bsid: "cafe::1c2"
+        node: "fd11::1000"
+        segment_list:
+          - "fcff:3::1"
+          - "fcdd::11aa:c11:b42f:f17e:a682"
+        traffic: IPv4
+      - 
+        bsid: "cafe::4"
+        node: "fd12::1000"
+        segment_list:
+          - "fcff:6::1"
+          - "fcff:8::1" 
+          - "fcdd::12aa:d460:b250:45:b04"
+        traffic: IPv4
+      - 
+        bsid: "cafe::5"
+        node: "fd12::1000"
+        segment_list:
+          - "fcff:6::1"
+          - "fcff:8::1"
+          - "fcdd::12aa:d460:b250:45:b05"
+        traffic: IPv6
+  worker1: |
+    --- 
+    localsids: 
+      DT4: "fcdd::11aa:c11:b42f:f17e:a682"
+      DT6: "fcdd::11aa:c11:b42f:f17e:a683"
+    node: worker1
+    policies: 
+      - 
+        bsid: "cafe::185"
+        node: "fd10::1000"
+        segment_list:
+          - "fcff:3::1" 
+          - "fcdd::aa:34b8:247c:36da:db45"
+        traffic: IPv6
+      - 
+        bsid: "cafe::184"
+        node: "fd10::1000"
+        segment_list:
+          - "fcff:3::1"
+          - "fcdd::aa:34b8:247c:36da:db44"
+        traffic: IPv4
+      - 
+        bsid: "cafe::4"
+        node: "fd12::1000"
+        segment_list:
+          - "fcff:6::1"
+          - "fcff:8::1"
+          - "fcdd::12aa:d460:b250:45:b04"
+        traffic: IPv4
+      - 
+        bsid: "cafe::5"
+        node: "fd12::1000"
+        segment_list:
+          - "fcff:6::1"
+          - "fcff:8::1" 
+          - "fcdd::12aa:d460:b250:45:b05"
+        traffic: IPv6
+
+  worker2: |
+    --- 
+    localsids: 
+      DT4: "fcdd::12aa:d460:b250:45:b04"
+      DT6: "fcdd::12aa:d460:b250:45:b05"
+    node: worker2
+    policies: 
+      - 
+        bsid: "cafe::1c3"
+        node: "fd11::1000"
+        segment_list:
+          - "fcff:4::1"
+          - "fcff:3::1" 
+          - "fcdd::11aa:c11:b42f:f17e:a683"
+        traffic: IPv6
+      - 
+        bsid: "cafe::1c2"
+        node: "fd11::1000"
+        segment_list:
+          - "fcff:4::1"
+          - "fcff:3::1"
+          - "fcdd::11aa:c11:b42f:f17e:a682"
+        traffic: IPv4
+      - 
+        bsid: "cafe::185"
+        node: "fd10::1000"
+        segment_list:
+          - "fcff:2::1"
+          - "fcff:3::1"
+          - "fcdd::aa:34b8:247c:36da:db45"
+        traffic: IPv6
+      - 
+        bsid: "cafe::184"
+        node: "fd10::1000"
+        segment_list:
+          - "fcff:2::1"
+          - "fcff:3::1"
+          - "fcdd::aa:34b8:247c:36da:db44"
+        traffic: IPv4

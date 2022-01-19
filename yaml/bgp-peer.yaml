@@ -1,0 +1,8 @@
+apiVersion: crd.projectcalico.org/v1
+kind: BGPPeer
+metadata:
+  name: bgppeer1
+spec:
+  peerIP: 192.168.9.254
+  node: bgppeer1
+  asNumber: 64512
