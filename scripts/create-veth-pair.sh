@@ -14,14 +14,20 @@ VETH_NS_NAME="veth${HOST}${INDEX}"
 NET_NAME=$(sudo virsh domiflist $VM_NAME | grep $VM_PREFIX_NET | awk '{print $3}')
 V_SWITCH=$(sudo virsh net-info $NET_NAME | grep Bridge | awk '{print $2}')
 echo "$NET_NAME $V_SWITCH"
+echo "Create veth pair inside $NETNS_PID"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip link add $VETH_NS_NAME type veth peer name $VETH_NS_NAME netns 1
+echo "Set $VETH_NS_NAME up"
 sudo ip link set $VETH_NS_NAME up
 # connect the veth0 to L2 switch
+echo "Set $VETH_NS_NAME to $V_SWITCH"
 sudo ip link set $VETH_NS_NAME master $V_SWITCH
 # activate veth0 inside the NS
+echo "Set $VETH_NS_NAME to up inside the NS"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip link set $VETH_NS_NAME up
 # assign IP6 to the veth0 inside the NS
+echo "Assign $VETH_NS_IP6 to $VETH_NS_NAME inside the NS"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP6 dev $VETH_NS_NAME
 # assign IP4 to the veth0 inside the NS
+echo "Assign $VETH_NS_IP4 to $VETH_NS_NAME inside the NS"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP4 dev $VETH_NS_NAME
 
