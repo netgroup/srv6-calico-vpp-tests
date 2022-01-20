@@ -2,9 +2,9 @@
     <name>srv6-calico-vpp-tests0</name>
     <forward mode='route'/>
     <bridge name='virbr-tests0' stp='on' delay='0'/>
-    <ip address='192.168.10.1' netmask='255.255.255.0'>
+    <ip address='192.168.20.1' netmask='255.255.255.0'>
       <dhcp>
-        <range start='192.168.10.2' end='192.168.10.254'/>
+        <range start='192.168.20.2' end='192.168.20.254'/>
       </dhcp>
     </ip>
     <ip family='ipv6' address='fd10::' prefix='64'>
