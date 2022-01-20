@@ -3914,7 +3914,7 @@ spec:
       containers:
       - env:
         #- name: CALICOVPP_DEFAULT_GW
-        #  value: 192.168.10.3,192.168.11.3,fd10::1020,fd11::1020
+        #  value: 192.168.20.3,192.168.11.3,fd10::1020,fd11::1020
         - name: CALICOVPP_NATIVE_DRIVER
           valueFrom:
             configMapKeyRef:
