@@ -1,8 +1,15 @@
+apiVersion: crd.projectcalico.org/v1 
+kind: BGPPeer
+metadata:
+  name: my-peer-v4
+spec:
+  peerIP: 192.169.9.254
+  asNumber: 64512
+---
 apiVersion: crd.projectcalico.org/v1
 kind: BGPPeer
 metadata:
-  name: bgppeer1
+  name: my-peer-v6
 spec:
-  peerIP: 192.168.9.254
-  node: bgppeer1
+  peerIP: fd00:0:34::2
   asNumber: 64512

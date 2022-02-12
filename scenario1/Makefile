@@ -40,7 +40,7 @@ add-routes-localsids-scenario:
 	@echo "Add routes localsids with srv6-calico-vpp-tests_master"
 	../scripts/add-route-localsids.sh r3 0 srv6-calico-vpp-tests_master srv6-calico-vpp-tests fcdd:0:0:aa::/64 fd10::1000
 	@echo "Add routes localsids with srv6-calico-vpp-tests_worker1"
-	../scripts/add-route-localsids.sh r3 1 srv6-calico-vpp-tests_worker1 srv6-calico-vpp-tests fcdd:0:0:12aa::/64 fd11::1000
+	../scripts/add-route-localsids.sh r3 1 srv6-calico-vpp-tests_worker1 srv6-calico-vpp-tests fcdd:0:0:11aa::/64 fd11::1000
 	@echo "Add route localsids with srv6-calico-vpp-tests_worker2"
 	../scripts/add-route-localsids.sh r8 2 srv6-calico-vpp-tests_worker2 srv6-calico-vpp-tests fcdd:0:0:12aa::/64 fd12::1000
  
