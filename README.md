@@ -75,7 +75,8 @@ replacing <release> with the output of lsb_release -s -c
 7) sudo apt -y install frr frr-pythontools
 
 
-### Building base image 
+### Building vagrant base image
+
 ``` bash
 $ # build vagrant image 
 $ make build-base-box
@@ -84,7 +85,7 @@ $ make build-base-box
 ## Scenario1
 ![image info](./scenario1/img/scenario1.png)
 ### Requirements
-
+Install all the python packages required for the scenario1:
 ``` bash
 $ make create-python-venv
 $ make install-python-dependencies
@@ -92,10 +93,13 @@ $ make install-python-dependencies
 
 ### Deploy Scenario1 with TE-ConfigMap
 
-From the command line:
+Deploy the mininet testbed with the node of the k8s cluster:
 
 ```sh
     $ make start-scenario1
+```
+After the testbed is started, we need to congigure the k8s cluster with calico-vpp and srv6 enabled.
+```sh
     $ #connect to the master node
     $ ssh vagrant@192.168.10.254 # password: vagrant
     $ # deploy calico-vpp with srv6 enabled 
@@ -106,14 +110,19 @@ From the command line:
     $ kubectl apply -f yaml/configMap.yaml
 ```
 
+After that we can check that all the pods are running:
+```sh
+    $ kubectl get pods -A -o wide
+```
+
 #### Check the SRv6 configuration inside vpp
 
-connect to the vppctl of a node
+We can check the SRv6 configuration inside vpp by running the following command:
 
 ```sh
     $ kubectl -n calico-vpp-dataplane exec -it <calico-vpp-node-podname> -c vpp -- vppctl
 ```
-from the vppctl prompt, you can
+from the vppctl prompt, we can
 
 show the localsids:
 
@@ -133,17 +142,19 @@ edit the configmap file in yaml/configMap.yaml and applay the changes:
 
     $ kubectl apply -f yaml/configMap.yaml
 
-then you can check the SRv6 configuration inside vpp:
+then we can check the SRv6 configuration inside vpp:
 
-    vpp# sh sr localsids
     vpp# sh sr policies
+
+and
+
     vpp# sh sr steering-policies
 
-### Deploy Scenario1 with TE-ConfigMap
+### Deploy Scenario1 with TE-BGP
 
 .....
 
-#### Entering the mininet node (unamed namespace)
+### Entering the mininet node (unamed namespace)
 
 For instance, want to enter into the mininet node called `r3`:
 
