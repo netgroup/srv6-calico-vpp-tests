@@ -68,6 +68,7 @@ start-scenario1:
 	@$(MAKE) start-cluster
 	@$(MAKE) create-veth-pair-scenario
 	@$(MAKE) add-routes-localsids-scenario
+	@$(MAKE) join-nodes-cluster
 	
 .PHONY: start-cluster
 start-cluster:
@@ -94,3 +95,10 @@ destroy-cluster:
 	set -o allexport; source .worker1.env; set +o allexport && vagrant destroy -f
 	@echo "destroy worker2 node scenario1"
 	set -o allexport; source .worker2.env; set +o allexport && vagrant destroy -f
+
+.PHONY: join-nodes-cluster
+join-nodes-cluster:
+	@echo "join worker1 node scenario1"
+	set -o allexport; source .worker1.env; set +o allexport && vagrant ssh -c "sudo kubeadm join 192.168.10.254:6443 --token xvyy6d.6iw5i2ivk55xsklv --ignore-preflight-errors=SystemVerification --discovery-token-unsafe-skip-ca-verification"
+	@echo "join worker2 node scenario1"
+	set -o allexport; source .worker2.env; set +o allexport && vagrant ssh -c "sudo kubeadm join 192.168.10.254:6443 --token xvyy6d.6iw5i2ivk55xsklv --ignore-preflight-errors=SystemVerification --discovery-token-unsafe-skip-ca-verification"

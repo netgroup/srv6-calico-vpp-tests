@@ -24,10 +24,10 @@ sudo ip link set $VETH_NS_NAME master $V_SWITCH
 # activate veth0 inside the NS
 echo "Set $VETH_NS_NAME to up inside the NS"
 sudo nsenter -t "$NETNS_PID" -n -m -- ip link set $VETH_NS_NAME up
-# assign IP6 to the veth0 inside the NS
-echo "Assign $VETH_NS_IP6 to $VETH_NS_NAME inside the NS"
-sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP6 dev $VETH_NS_NAME
-# assign IP4 to the veth0 inside the NS
-echo "Assign $VETH_NS_IP4 to $VETH_NS_NAME inside the NS"
-sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP4 dev $VETH_NS_NAME
+# # assign IP6 to the veth0 inside the NS
+# echo "Assign $VETH_NS_IP6 to $VETH_NS_NAME inside the NS"
+# sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP6 dev $VETH_NS_NAME
+# # assign IP4 to the veth0 inside the NS
+# echo "Assign $VETH_NS_IP4 to $VETH_NS_NAME inside the NS"
+# sudo nsenter -t "$NETNS_PID" -n -m -- ip addr add $VETH_NS_IP4 dev $VETH_NS_NAME
 
