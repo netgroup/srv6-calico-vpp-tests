@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: srv6-config
+  name: srv6-config-master
   namespace: calico-vpp-dataplane
 data:
-  master: |
+  srv6: |
     --- 
     localsids: 
       DT4: "fcdd::aa:34b8:247c:36da:db44"
@@ -41,7 +41,14 @@ data:
           - "fcff:8::1"
           - "fcdd::12aa:d460:b250:45:b05"
         traffic: IPv6
-  worker1: |
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: srv6-config-worker1
+  namespace: calico-vpp-dataplane
+data:
+  srv6: |
     --- 
     localsids: 
       DT4: "fcdd::11aa:c11:b42f:f17e:a682"
@@ -79,7 +86,14 @@ data:
           - "fcdd::12aa:d460:b250:45:b05"
         traffic: IPv6
 
-  worker2: |
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: srv6-config-worker2
+  namespace: calico-vpp-dataplane
+data:
+  srv6: |
     --- 
     localsids: 
       DT4: "fcdd::12aa:d460:b250:45:b04"
