@@ -51,14 +51,6 @@ Vagrant.configure('2') do |config|
         end
         # Provision
         subconfig.vm.provision :file do |provision|
-            provision.source = '../docker/image_agent_srv6_cm.zip'
-            provision.destination = '/tmp/image_agent_srv6'
-        end
-        subconfig.vm.provision :file do |provision|
-            provision.source = '../docker/image_vpp_srv6_cm.zip'
-            provision.destination = '/tmp/image_vpp_srv6'
-        end
-        subconfig.vm.provision :file do |provision|
             provision.source = '../yaml/'
             provision.destination = '/home/vagrant/'
         end

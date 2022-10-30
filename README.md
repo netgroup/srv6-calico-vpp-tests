@@ -12,10 +12,9 @@ Tested on Ubuntu 20.04 machine with 8 CPU and 16 GB RAM
 
 ## Installation
 
-Start by cloning this repository with all the submodules and git-lfs:
+Start by cloning this repository with all the submodules:
 ``` sh
-    git clone --recurse-submodules git@github.com:zvfvrv/srv6-calico-vpp-tests.git
-    git-lfs pull
+    git clone --recurse-submodules git@github.com:netgroup/srv6-calico-vpp-tests.git
 ```
 be sure that the submodules are pulled(./mininet/rose-srv6-tutorial) and the docker images are downloaded (./docker/). For the tests we are using modified container images since some features are still not part of the official Calico-VPP repository.
     
@@ -95,6 +94,13 @@ $ make install-python-dependencies
 ```
 
 ### Deploy Scenario1 with TE-ConfigMap
+
+We first check that the value of CALICOVPP_SRV6_TE is set to “configmap” in yaml/test-srv6.yaml
+
+```yaml
+- name: CALICOVPP_SRV6_TE
+  value: "configmap"
+```
 
 Deploy the mininet testbed with the node of the k8s cluster:
 

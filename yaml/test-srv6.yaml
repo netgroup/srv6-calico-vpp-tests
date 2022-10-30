@@ -3947,7 +3947,7 @@ spec:
               fieldPath: spec.nodeName
         - name: CALICOVPP_CORE_PATTERN
           value: /var/lib/vpp/vppcore.%e.%p
-        image: docker.io/calicovpp/vpp:srv6_cm
+        image: docker.io/rosesrv6/vpp:srv6_cm
         imagePullPolicy: IfNotPresent
         name: vpp
         resources:
@@ -3989,6 +3989,8 @@ spec:
             configMapKeyRef:
               key: sr_localsid_pool
               name: calico-vpp-config
+        - name: CALICOVPP_SRV6_TE
+          value: ""
         - name: DATASTORE_TYPE
           value: kubernetes
         - name: WAIT_FOR_DATASTORE
@@ -4002,7 +4004,7 @@ spec:
             configMapKeyRef:
               key: service_prefix
               name: calico-vpp-config
-        image: docker.io/calicovpp/agent:srv6_cm
+        image: docker.io/rosesrv6/agent:srv6_cm
         imagePullPolicy: IfNotPresent
         name: agent
         resources:
