@@ -3990,7 +3990,7 @@ spec:
               key: sr_localsid_pool
               name: calico-vpp-config
         - name: CALICOVPP_SRV6_TE
-          value: ""
+          value: "configmap"
         - name: DATASTORE_TYPE
           value: kubernetes
         - name: WAIT_FOR_DATASTORE
@@ -4004,7 +4004,7 @@ spec:
             configMapKeyRef:
               key: service_prefix
               name: calico-vpp-config
-        image: docker.io/rosesrv6/agent:srv6_cm
+        image: docker.io/rosesrv6/agent:srv6_dev
         imagePullPolicy: IfNotPresent
         name: agent
         resources:
