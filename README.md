@@ -4,7 +4,6 @@ k8s environments with Calico-VPP and SRv6 enabled.
 Tested on Ubuntu 20.04 machine with 8 CPU and 16 GB RAM
 
 ## Requirements
-- git-lfs (curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash)
 - vagrant
 - mininet
 - frr
@@ -16,7 +15,7 @@ Start by cloning this repository with all the submodules:
 ``` sh
     git clone --recurse-submodules git@github.com:netgroup/srv6-calico-vpp-tests.git
 ```
-be sure that the submodules are pulled(./mininet/rose-srv6-tutorial) and the docker images are downloaded (./docker/). For the tests we are using modified container images since some features are still not part of the official Calico-VPP repository.
+For the tests we are using modified container images since some features are still not part of the official Calico-VPP repository.
     
 Install the required packages:
 ``` sh
